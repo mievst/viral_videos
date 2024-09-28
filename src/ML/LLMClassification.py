@@ -6,9 +6,16 @@ class LLMClassification:
         self.classifier = pipeline(
             "zero-shot-classification", model="cointegrated/rubert-base-cased-nli-threeway", device="auto")
 
-    def classify(self, text, labels):
-        result = self.classifier(text, labels)
+    def classify_chunks(self, chunks, labels, target_duration=120.0):
+        ngrams = self.create_ngrams_by_time_and_duration(chunks, target_duration=120.0)
+        for ngram in ngrams:
+            result = self.classifier(ngram['text'], labels)
+            ngram["labels"] = result["labels"]
+            ngram["scores"] = result["scores"]
         return result
+
+    def classify(self, text, lables):
+        return self.classifier(text, lables)
 
     def create_ngrams_by_time_and_duration(self, chunks, max_overlap=0.5, target_duration=10.0):
         ngrams = []
