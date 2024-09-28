@@ -76,5 +76,4 @@ class ClipDetector:
             num1 = random.uniform(0, duration)
             num2 = random.uniform(num1, duration)
             timestamps.append((num1, num2))
-
         return timestamps
