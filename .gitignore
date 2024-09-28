@@ -3,3 +3,6 @@ viral_videos_train_2
 train_dataset_viral_videos_train.zip
 viral_videos_train_2.zip
 result.json
+experiments/__pycache__/stt.cpython-311.pyc
+experiments/__pycache__/translator.cpython-311.pyc
+experiments/audio.wav

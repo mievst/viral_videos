@@ -2,8 +2,8 @@ import os
 import json
 from tqdm import tqdm
 from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip
-from ML.stt import SpeechRecognition
-from ML.translator import TranslatorToRussian
+from stt import SpeechRecognition
+from translator import TranslatorToRussian
 
 
 class VideoSubtitler:
