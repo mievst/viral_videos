@@ -4,6 +4,8 @@ from flask import session, jsonify, request,render_template
 from app.constants.constants import Constants
 from app import app
 import uuid
+from .service.MLService.ClipDetector import ClipDetector
+from app.service.VideoCutService import VideoCutService
 
 @app.before_request
 def before_request():
@@ -52,22 +54,21 @@ def get_viral():
     # video_keywords
     #user_id = session['user_id']
 
-    user_id = '9212b540-7da3-4b83-94c7-fbba4512ef7e'
-    user_folder_path = os.path.join("videos/",user_id)
+    user_id = 'd801f520-4168-4cdf-9f0a-a3e4624d82a0'
+    user_folder_path = os.path.join("src/videos/",user_id)
 
     files = os.listdir(user_folder_path)
     filtered_files = [f for f in files if not os.path.isdir(os.path.join(user_folder_path, f))]
     file = filtered_files[0]
 
     video_path = os.path.join(user_folder_path, file)
-    ml_service = app.config[Constants.ml_service_key]
-    response = ml_service.mock_detect(video_path)
+    ml_service = ClipDetector(video_path, "./src/app/temp")
+    #response = ml_service.mock_detect()
+    response = ml_service.detect(30)
     # timestamps должны браться из response
-    timestamps = [[36.72, 38.64], [9.24, 30.1], [32.83, 36.5]]
-
     # нарезка файлов
     # файлы сохраняются в videos/user_id/virals
-    video_cut_service = app.config[Constants.video_cut_service_key]
-    clips = video_cut_service.cut_video(video_path, timestamps)
-    video_cut_service.save_clips(clips, user_id)
+    video_cut_service = VideoCutService(video_path, "./src/app/temp" )
+    clips = video_cut_service.run(response, user_id)
+    #video_cut_service.save_clips(clips, user_id)
     return jsonify(response)

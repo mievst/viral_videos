@@ -2,9 +2,10 @@ import random
 import torch
 from transformers import pipeline
 from moviepy.editor import VideoFileClip
-from src.ML.stt import SpeechRecognition
-from src.ML.LLMClassification import LLMClassification
+from .ML.stt import SpeechRecognition
+from .ML.LLMClassification import LLMClassification
 import os
+from .ML.YOLODetector import YOLODetector
 
 class ClipDetector:
     def __init__(self, video_path, temp_dir):
@@ -12,6 +13,7 @@ class ClipDetector:
         self.temp_dir = temp_dir
         self.stt = SpeechRecognition()
         self.llm = LLMClassification()
+        self.yolo = YOLODetector()
         self.chunks = None
 
         self.viral_lables = ["юмор", "шок", "негатив", "удивление"]
@@ -41,16 +43,21 @@ class ClipDetector:
         self.__create_transcribtion()
         result = self.llm.classify_chunks(self.chunks, self.viral_lables, target_duration)
         top_results = sorted(result, key=lambda x: max(x['scores']), reverse=True)
+
         if len(top_results) > 20:
             top_results = top_results[:20]
         return top_results
 
+    def get_bbox(self):
+        result = self.yolo.detect_persons_in_video(self.video_path)
+        return result
+
     def __create_transcribtion(self):
         video = VideoFileClip(self.video_path)
         video_name = os.path.basename(self.video_path).split(".")[0]
-        audio_path = os.path.join(self.temp_dir, f"{video_name}.wav"
+        audio_path = os.path.join(self.temp_dir, f"{video_name}.wav")
         video.audio.write_audiofile(audio_path)
-        self.chunks = stt.recognize_speech(audio_path)
+        self.chunks = self.stt.recognize_speech(audio_path)
 
     def get_tags(self, texts):
         results = []

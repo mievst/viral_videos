@@ -12,8 +12,8 @@ app.config.from_object('app.config.Config')
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config[Constants.video_service_key] = VideoUploadService()
-app.config[Constants.ml_service_key] = ClipDetector()
-app.config[Constants.video_cut_service_key] = VideoCutService()
+#app.config[Constants.ml_service_key] = ClipDetector()
+#app.config[Constants.video_cut_service_key] = VideoCutService()
 
 Session(app)
 

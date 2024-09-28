@@ -4,15 +4,15 @@ from transformers import pipeline
 class LLMClassification:
     def __init__(self):
         self.classifier = pipeline(
-            "zero-shot-classification", model="cointegrated/rubert-base-cased-nli-threeway", device="auto")
+            "zero-shot-classification", model="cointegrated/rubert-base-cased-nli-threeway", device="cuda")
 
     def classify_chunks(self, chunks, labels, target_duration=120.0):
-        ngrams = self.create_ngrams_by_time_and_duration(chunks, target_duration=120.0)
+        ngrams = self.create_ngrams_by_time_and_duration(chunks["chunks"], target_duration=target_duration)
         for ngram in ngrams:
             result = self.classifier(ngram['text'], labels)
             ngram["labels"] = result["labels"]
             ngram["scores"] = result["scores"]
-        return result
+        return ngrams
 
     def classify(self, text, lables):
         return self.classifier(text, lables)

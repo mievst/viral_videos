@@ -30,7 +30,7 @@ class SpeechRecognition:
 
         if len(result["chunks"]) > 0:
             audio_duration = self.get_audio_duration(audio_file)
-            result["chunks"][-1]["timestamp"][1] = audio_duration
+            result["chunks"][-1]["timestamp"] = (result["chunks"][-1]["timestamp"][0], audio_duration)
         return result
 
     def get_audio_duration(self, audio_file):
