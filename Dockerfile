@@ -28,5 +28,5 @@ COPY . .
 COPY requirements.txt /opt/app
 RUN pip install -r requirements.txt
 COPY src /opt/app/src
-#WORKDIR /opt/app/src
+WORKDIR /opt/app
 CMD ["python", "-u", "src/run.py"]
