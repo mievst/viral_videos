@@ -9,9 +9,6 @@ import uuid
 from .service.MLService.ClipDetector import ClipDetector
 from app.service.VideoCutService import VideoCutService
 
-from src.app.frontend.gradio_front import create_interface
-gradio_interface = create_interface()
-
 
 tasks = {}
 
@@ -54,14 +51,9 @@ def before_request():
         session['user_id'] = str(uuid.uuid4())
 
 
-def run_gradio():
-    gradio_interface.launch(share=True, inline=True)
-
-
 @app.route('/')
 def index():
-    threading.Thread(target=run_gradio).start()
-    return redirect('http://127.0.0.1:7860')
+    pass
 
 #  загрузить одно видео
 
